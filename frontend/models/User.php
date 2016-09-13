@@ -59,6 +59,7 @@ class User extends \yii\db\ActiveRecord
             [['created_at'], 'safe'],
             [['username'], 'string', 'max' => 63],
             [['email', 'password'], 'string', 'max' => 255],
+            [['email'], 'email'],
             [['age'], 'integer'],
             [['address', 'city', 'country'], 'string', 'max' => 100],
             [['phone_number'], 'integer'],

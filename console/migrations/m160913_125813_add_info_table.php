@@ -15,7 +15,7 @@ class m160913_125813_add_info_table extends Migration
             'country' => Schema::TYPE_STRING . '(100) NOT NULL',
             'phone_number' => Schema::TYPE_STRING . '(100) NOT NULL',
         ]);
-        $this->addForeignKey('users_user_id_fk', 'users.info', 'user_id', 'users.user', 'id', 'NO ACTION', 'CASCADE');
+        $this->addForeignKey('users_user_id_fk', 'users.info', 'user_id', 'users.user', 'id', 'CASCADE');
     }
 
     public function down()
