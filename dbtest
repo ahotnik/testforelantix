@@ -1,0 +1,241 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: users; Type: SCHEMA; Schema: -; Owner: siteadmin
+--
+
+CREATE SCHEMA users;
+
+
+ALTER SCHEMA users OWNER TO siteadmin;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: migration; Type: TABLE; Schema: public; Owner: siteadmin; Tablespace: 
+--
+
+CREATE TABLE migration (
+    version character varying(180) NOT NULL,
+    apply_time integer
+);
+
+
+ALTER TABLE migration OWNER TO siteadmin;
+
+SET search_path = users, pg_catalog;
+
+--
+-- Name: info; Type: TABLE; Schema: users; Owner: siteadmin; Tablespace: 
+--
+
+CREATE TABLE info (
+    user_id integer NOT NULL,
+    age integer NOT NULL,
+    address character varying(100) NOT NULL,
+    city character varying(100) NOT NULL,
+    country character varying(100) NOT NULL,
+    phone_number character varying(100) NOT NULL
+);
+
+
+ALTER TABLE info OWNER TO siteadmin;
+
+--
+-- Name: info_user_id_seq; Type: SEQUENCE; Schema: users; Owner: siteadmin
+--
+
+CREATE SEQUENCE info_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE info_user_id_seq OWNER TO siteadmin;
+
+--
+-- Name: info_user_id_seq; Type: SEQUENCE OWNED BY; Schema: users; Owner: siteadmin
+--
+
+ALTER SEQUENCE info_user_id_seq OWNED BY info.user_id;
+
+
+--
+-- Name: user; Type: TABLE; Schema: users; Owner: siteadmin; Tablespace: 
+--
+
+CREATE TABLE "user" (
+    id integer NOT NULL,
+    username character varying(63) NOT NULL,
+    email character varying(255) NOT NULL,
+    password character varying(255) NOT NULL,
+    created_at timestamp(0) without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE "user" OWNER TO siteadmin;
+
+--
+-- Name: user_id_seq; Type: SEQUENCE; Schema: users; Owner: siteadmin
+--
+
+CREATE SEQUENCE user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE user_id_seq OWNER TO siteadmin;
+
+--
+-- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: users; Owner: siteadmin
+--
+
+ALTER SEQUENCE user_id_seq OWNED BY "user".id;
+
+
+--
+-- Name: user_id; Type: DEFAULT; Schema: users; Owner: siteadmin
+--
+
+ALTER TABLE ONLY info ALTER COLUMN user_id SET DEFAULT nextval('info_user_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: users; Owner: siteadmin
+--
+
+ALTER TABLE ONLY "user" ALTER COLUMN id SET DEFAULT nextval('user_id_seq'::regclass);
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Data for Name: migration; Type: TABLE DATA; Schema: public; Owner: siteadmin
+--
+
+COPY migration (version, apply_time) FROM stdin;
+m160913_125730_add_user_table	1473801288
+m160913_125813_add_info_table	1473801288
+\.
+
+
+SET search_path = users, pg_catalog;
+
+--
+-- Data for Name: info; Type: TABLE DATA; Schema: users; Owner: siteadmin
+--
+
+COPY info (user_id, age, address, city, country, phone_number) FROM stdin;
+1	18	Дворецька, 9	Рівне	Україна	225236
+2	17	Соборна, 13	Рівне	Україна	8921234
+3	19	Popova	Rivne	Ukraine	0964131228
+\.
+
+
+--
+-- Name: info_user_id_seq; Type: SEQUENCE SET; Schema: users; Owner: siteadmin
+--
+
+SELECT pg_catalog.setval('info_user_id_seq', 1, false);
+
+
+--
+-- Data for Name: user; Type: TABLE DATA; Schema: users; Owner: siteadmin
+--
+
+COPY "user" (id, username, email, password, created_at) FROM stdin;
+1	Вася	vasya@mail.com	123123	2016-09-14 00:15:20
+2	Вікторія	vika@mail.com	123123	2016-09-14 00:15:55
+3	Толя	tolya@mail.com	10367	2016-09-14 00:16:32
+\.
+
+
+--
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: users; Owner: siteadmin
+--
+
+SELECT pg_catalog.setval('user_id_seq', 3, true);
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: migration_pkey; Type: CONSTRAINT; Schema: public; Owner: siteadmin; Tablespace: 
+--
+
+ALTER TABLE ONLY migration
+    ADD CONSTRAINT migration_pkey PRIMARY KEY (version);
+
+
+SET search_path = users, pg_catalog;
+
+--
+-- Name: info_pkey; Type: CONSTRAINT; Schema: users; Owner: siteadmin; Tablespace: 
+--
+
+ALTER TABLE ONLY info
+    ADD CONSTRAINT info_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: user_pkey; Type: CONSTRAINT; Schema: users; Owner: siteadmin; Tablespace: 
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_user_id_fk; Type: FK CONSTRAINT; Schema: users; Owner: siteadmin
+--
+
+ALTER TABLE ONLY info
+    ADD CONSTRAINT users_user_id_fk FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE;
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

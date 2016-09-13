@@ -1,0 +1,13 @@
+use command:
+
+psql -U siteadmin test < dbtest
+
+where:
+
+siteadmin : user role
+
+test : database name
+
+dbtest : dump file name
+
+
